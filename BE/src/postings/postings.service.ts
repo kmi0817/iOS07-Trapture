@@ -96,15 +96,31 @@ export class PostingsService {
   }
 
   async search(searchPostingDto: SearchPostingDto) {
-    const [period, headcount, budget, location, season, vehicle] =
-      await Promise.all([
-        this.periodsRepository.findByName(searchPostingDto.period),
-        this.headcountsRepository.findByName(searchPostingDto.headcount),
-        this.budgetsRepository.findByName(searchPostingDto.budget),
-        this.locationsRepository.findByName(searchPostingDto.location),
-        this.seasonsRepository.findByName(searchPostingDto.season),
-        this.vehiclesRepository.findByName(searchPostingDto.vehicle),
-      ]);
+    // const theme = await this.themesRepository.findByName('맛집');
+    // const test = await this.postingsRepository.findPostingsWithTheme(theme);
+    // test.forEach((e) => {
+    //   console.log(e.postingThemes);
+    // });
+
+    const [
+      period,
+      headcount,
+      budget,
+      location,
+      season,
+      vehicle,
+      theme,
+      withWho,
+    ] = await Promise.all([
+      this.periodsRepository.findByName(searchPostingDto.period),
+      this.headcountsRepository.findByName(searchPostingDto.headcount),
+      this.budgetsRepository.findByName(searchPostingDto.budget),
+      this.locationsRepository.findByName(searchPostingDto.location),
+      this.seasonsRepository.findByName(searchPostingDto.season),
+      this.vehiclesRepository.findByName(searchPostingDto.vehicle),
+      this.themesRepository.findByName(searchPostingDto.theme),
+      this.withWhosRepository.findByName(searchPostingDto.withWho),
+    ]);
 
     const keyword =
       !period &&
@@ -113,6 +129,8 @@ export class PostingsService {
       !location &&
       !season &&
       !vehicle &&
+      !theme &&
+      !withWho &&
       !searchPostingDto.keyword
         ? ''
         : searchPostingDto.keyword;
@@ -125,10 +143,11 @@ export class PostingsService {
       location,
       season,
       vehicle,
+      theme,
+      withWho,
     };
 
-    const postings = await this.postingsRepository.find(searchConditions);
-    return postings;
+    return this.postingsRepository.find(searchConditions);
   }
 
   async findPosting(id: string) {

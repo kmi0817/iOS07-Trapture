@@ -4,6 +4,8 @@ import { Budget } from './entities/tags/budget.entity';
 import { Location } from './entities/tags/location.entity';
 import { Season } from './entities/tags/season.entity';
 import { Vehicle } from './entities/tags/vehicle.entity';
+import { Theme } from './entities/tags/theme.entity';
+import { WithWho } from './entities/tags/with-who.entity';
 
 export const periods = [
   '당일치기',
@@ -62,4 +64,6 @@ export type postingSearchCondition = {
   location?: Location;
   season?: Season;
   vehicle?: Vehicle;
+  theme?: Theme;
+  withWho?: WithWho;
 };

@@ -16,16 +16,30 @@ export class PostingsRepository {
   }
 
   async find(conditions: postingSearchCondition) {
+    const where: any[] = [
+      { title: Like(`%${conditions.keyword}%`) },
+      { period: conditions.period },
+      { headcount: conditions.headcount },
+      { budget: conditions.budget },
+      { location: conditions.location },
+      { season: conditions.season },
+      { vehicle: conditions.vehicle },
+    ];
+
+    if (conditions.theme) {
+      where.push({
+        postingThemes: { tag: { id: conditions.theme.id } },
+      });
+    }
+
+    if (conditions.withWho) {
+      where.push({
+        postingWithWhos: { tag: { id: conditions.withWho.id } },
+      });
+    }
+
     return this.postingsRepository.find({
-      where: [
-        { title: Like(`%${conditions.keyword}%`) },
-        { period: conditions.period },
-        { headcount: conditions.headcount },
-        { budget: conditions.budget },
-        { location: conditions.location },
-        { season: conditions.season },
-        { vehicle: conditions.vehicle },
-      ],
+      where: where,
       relations: {
         writer: true,
         budget: true,
@@ -34,6 +48,8 @@ export class PostingsRepository {
         period: true,
         season: true,
         vehicle: true,
+        postingThemes: true,
+        postingWithWhos: true,
       },
     });
   }
