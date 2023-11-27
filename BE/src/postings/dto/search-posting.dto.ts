@@ -43,17 +43,15 @@ export class SearchPostingDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  @IsIn(themes, { each: true })
-  theme: string[];
+  @IsString()
+  @IsIn(themes)
+  theme: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  @IsIn(withWhos, { each: true })
-  withWho: string[];
+  @IsString()
+  @IsIn(withWhos)
+  withWho: string;
 
   @ApiProperty()
   @IsOptional()
