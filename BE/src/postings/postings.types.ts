@@ -1,3 +1,10 @@
+import { Headcount } from './entities/tags/headcount.entity';
+import { Period } from './entities/tags/period.entity';
+import { Budget } from './entities/tags/budget.entity';
+import { Location } from './entities/tags/location.entity';
+import { Season } from './entities/tags/season.entity';
+import { Vehicle } from './entities/tags/vehicle.entity';
+
 export const periods = [
   '당일치기',
   '1박 2일',
@@ -46,3 +53,13 @@ export const themes = [
 export const withWhos = ['반려동물', '가족', '친구', '연인'];
 export const vehicles = ['대중교통', '자차'];
 export const seasons = ['봄', '여름', '가을', '겨울'];
+
+export type postingSearchCondition = {
+  keyword?: string;
+  period?: Period;
+  headcount?: Headcount;
+  budget?: Budget;
+  location?: Location;
+  season?: Season;
+  vehicle?: Vehicle;
+};

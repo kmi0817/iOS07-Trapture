@@ -1,7 +1,8 @@
 import { POSTINGS_REPOSITORY } from '../postings.constants';
+import { postingSearchCondition } from '../postings.types';
 import { Posting } from '../entities/posting.entity';
 import { Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 
 @Injectable()
 export class PostingsRepository {
@@ -12,6 +13,29 @@ export class PostingsRepository {
 
   async save(posting: Posting) {
     return this.postingsRepository.save(posting);
+  }
+
+  async find(conditions: postingSearchCondition) {
+    return this.postingsRepository.find({
+      where: [
+        { title: Like(`%${conditions.keyword}%`) },
+        { period: conditions.period },
+        { headcount: conditions.headcount },
+        { budget: conditions.budget },
+        { location: conditions.location },
+        { season: conditions.season },
+        { vehicle: conditions.vehicle },
+      ],
+      relations: {
+        writer: true,
+        budget: true,
+        headcount: true,
+        location: true,
+        period: true,
+        season: true,
+        vehicle: true,
+      },
+    });
   }
 
   async findOne(id: string) {

@@ -7,15 +7,9 @@ import {
 } from '@nestjs/common';
 import { CreatePostingDto } from './dto/create-posting.dto';
 import { UpdatePostingDto } from './dto/update-posting.dto';
+import { SearchPostingDto } from './dto/search-posting.dto';
 import { Posting } from './entities/posting.entity';
-import {
-  headcounts,
-  budgets,
-  locations,
-  themes,
-  vehicles,
-  withWhos,
-} from './postings.types';
+import { postingSearchCondition } from './postings.types';
 import { LikedsRepository } from './repositories/likeds.repository';
 import { PostingThemesRepository } from './repositories/mappings/posting-themes.repository';
 import { PostingWithWhosRepository } from './repositories/mappings/posting-with-whos.repository';
@@ -101,9 +95,41 @@ export class PostingsService {
     );
   }
 
-  // findAll() {
-  //   return `This action returns all postings`;
-  // }
+  async search(searchPostingDto: SearchPostingDto) {
+    const [period, headcount, budget, location, season, vehicle] =
+      await Promise.all([
+        this.periodsRepository.findByName(searchPostingDto.period),
+        this.headcountsRepository.findByName(searchPostingDto.headcount),
+        this.budgetsRepository.findByName(searchPostingDto.budget),
+        this.locationsRepository.findByName(searchPostingDto.location),
+        this.seasonsRepository.findByName(searchPostingDto.season),
+        this.vehiclesRepository.findByName(searchPostingDto.vehicle),
+      ]);
+
+    const keyword =
+      !period &&
+      !headcount &&
+      !budget &&
+      !location &&
+      !season &&
+      !vehicle &&
+      !searchPostingDto.keyword
+        ? ''
+        : searchPostingDto.keyword;
+
+    const searchConditions: postingSearchCondition = {
+      keyword,
+      period,
+      headcount,
+      budget,
+      location,
+      season,
+      vehicle,
+    };
+
+    const postings = await this.postingsRepository.find(searchConditions);
+    return postings;
+  }
 
   async findPosting(id: string) {
     const [posting, theme, withWho] = await Promise.all([
