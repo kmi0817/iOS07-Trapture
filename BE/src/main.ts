@@ -6,6 +6,7 @@ import { setupSwagger } from './swagger/swagger.setting';
 import { ValidationPipe } from '@nestjs/common';
 import { initializeTransactionalContext } from 'typeorm-transactional';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
   initializeTransactionalContext();
@@ -22,6 +23,9 @@ async function bootstrap() {
   );
   app.setBaseViewsDir(__dirname + '/../views');
   app.setViewEngine('ejs');
+  app.useStaticAssets(join(__dirname, '..', 'static'), {
+    prefix: `/static`,
+  });
 
   setupSwagger(app);
 
